@@ -112,7 +112,12 @@ const updateCartModal = () => {
     const cartTotal = document.getElementById('cart-total');
 
     if (cartData.items.length === 0) {
-        cartItems.innerHTML = '<p class="empty-cart">Your cart is empty</p>';
+        cartItems.innerHTML = `
+            <div class="empty-cart">
+                <i class="fas fa-shopping-cart"></i>
+                <p>Your cart is empty</p>
+            </div>
+        `;
         cartTotal.textContent = '$0.00';
         return;
     }
@@ -120,18 +125,20 @@ const updateCartModal = () => {
     // Render cart items
     cartItems.innerHTML = cartData.items.map(item => `
     <div class="cart-item" data-item-id="${item._id}">
-      <img src="${item.product.images[0]}" alt="${item.product.name}">
+      <img src="http://localhost:5001${item.product.images[0]}" alt="${item.product.name}">
       <div class="cart-item-details">
         <h4>${item.product.name}</h4>
         <p>Size: ${item.size}</p>
         <p class="price">$${item.price.toFixed(2)}</p>
       </div>
       <div class="cart-item-actions">
-        <button onclick="updateCartQuantity('${item._id}', ${item.quantity - 1})">-</button>
-        <span>${item.quantity}</span>
-        <button onclick="updateCartQuantity('${item._id}', ${item.quantity + 1})">+</button>
+        <div class="quantity-controls">
+            <button onclick="updateCartQuantity('${item._id}', ${item.quantity - 1})">-</button>
+            <span>${item.quantity}</span>
+            <button onclick="updateCartQuantity('${item._id}', ${item.quantity + 1})">+</button>
+        </div>
         <button class="remove-btn" onclick="removeFromCart('${item._id}')">
-          <i class="fas fa-trash"></i>
+          <i class="fas fa-trash"></i> Remove
         </button>
       </div>
     </div>
