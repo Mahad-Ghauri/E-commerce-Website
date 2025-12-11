@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=0">
@@ -13,7 +14,9 @@
     <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/css/style.css">
     <link rel="stylesheet" href="/css/responsive.css">
+    <link rel="stylesheet" href="/css/cart-auth.css">
 </head>
+
 <body>
     <header id="top">
         <div class="cont-nav pMain">
@@ -47,6 +50,25 @@
                     </ul>
                 </nav>
             </div>
+
+            <!-- Cart Icon -->
+            <div class="cart-icon" onclick="Cart.show()">
+                <i class="fas fa-shopping-cart"></i>
+                <span id="cart-count">0</span>
+            </div>
+
+            <!-- Auth Buttons (shown when not logged in) -->
+            <div id="auth-buttons">
+                <button onclick="Auth.showLogin()">Login</button>
+                <button onclick="Auth.showRegister()">Sign Up</button>
+            </div>
+
+            <!-- User Menu (shown when logged in) -->
+            <div id="user-menu">
+                <span id="user-name"></span>
+                <button onclick="Auth.logout()">Logout</button>
+            </div>
+
             <div class="menu-btn"><i class="fas fa-bars"></i></div>
             <div class="menu-btn-active"><i class="fas fa-times"></i></div>
         </div>
@@ -795,6 +817,84 @@
         </div>
 
     </footer>
+
+    <!-- Cart Modal -->
+    <div id="cart-modal" class="modal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="Cart.hide()">&times;</button>
+            <div class="cart-header">
+                <h2>Shopping Cart</h2>
+            </div>
+            <div id="cart-items"></div>
+            <div class="cart-footer">
+                <div class="cart-total">
+                    <span>Total:</span>
+                    <span id="cart-total">$0.00</span>
+                </div>
+                <div class="cart-actions">
+                    <button class="btn-checkout" onclick="Cart.checkout()">Checkout</button>
+                    <button class="btn-clear" onclick="Cart.clear()">Clear Cart</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Login Modal -->
+    <div id="login-modal" class="modal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="Auth.hideLogin()">&times;</button>
+            <form id="login-form" class="auth-form">
+                <h2>Login</h2>
+                <div class="form-group">
+                    <label for="login-email">Email</label>
+                    <input type="email" id="login-email" required>
+                </div>
+                <div class="form-group">
+                    <label for="login-password">Password</label>
+                    <input type="password" id="login-password" required>
+                </div>
+                <button type="submit" class="btn-submit">Login</button>
+                <div class="auth-switch">
+                    Don't have an account? <a onclick="Auth.hideLogin(); Auth.showRegister();">Sign up</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Register Modal -->
+    <div id="register-modal" class="modal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="Auth.hideRegister()">&times;</button>
+            <form id="register-form" class="auth-form">
+                <h2>Sign Up</h2>
+                <div class="form-group">
+                    <label for="register-name">Full Name</label>
+                    <input type="text" id="register-name" required>
+                </div>
+                <div class="form-group">
+                    <label for="register-email">Email</label>
+                    <input type="email" id="register-email" required>
+                </div>
+                <div class="form-group">
+                    <label for="register-password">Password</label>
+                    <input type="password" id="register-password" minlength="6" required>
+                </div>
+                <div class="form-group">
+                    <label for="register-confirm-password">Confirm Password</label>
+                    <input type="password" id="register-confirm-password" minlength="6" required>
+                </div>
+                <button type="submit" class="btn-submit">Sign Up</button>
+                <div class="auth-switch">
+                    Already have an account? <a onclick="Auth.hideRegister(); Auth.showLogin();">Login</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- API and Cart JavaScript -->
+    <script src="/js/api.js"></script>
+    <script src="/js/auth.js"></script>
+    <script src="/js/cart.js"></script>
 </body>
 
 </html>
