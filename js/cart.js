@@ -168,6 +168,7 @@ const hideCart = () => {
 const checkout = async () => {
     if (!API.auth.isAuthenticated()) {
         showNotification('Please login to checkout', 'warning');
+        localStorage.setItem('postLoginRedirect', '/checkout.html');
         showLoginModal();
         return;
     }
@@ -177,7 +178,7 @@ const checkout = async () => {
         return;
     }
 
-    // Redirect to checkout page or show checkout modal
+    // Redirect to checkout page
     window.location.href = '/checkout.html';
 };
 

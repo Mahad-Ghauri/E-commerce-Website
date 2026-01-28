@@ -193,3 +193,6 @@ window.API = {
     setUser,
     removeUser,
 };
+
+// Expose base URL for other modules (e.g., image URLs)
+window.API_BASE_URL = API_BASE_URL;
