@@ -9,6 +9,32 @@ exports.createOrder = async (req, res, next) => {
     try {
         const { shippingAddress, paymentMethod } = req.body;
 
+        if (!shippingAddress) {
+            return res.status(400).json({
+                success: false,
+                message: 'Shipping address is required',
+            });
+        }
+
+        const requiredFields = ['street', 'city', 'state', 'zipCode', 'country'];
+        const missingFields = requiredFields.filter(
+            (field) => !shippingAddress[field]
+        );
+
+        if (missingFields.length > 0) {
+            return res.status(400).json({
+                success: false,
+                message: `Missing shipping fields: ${missingFields.join(', ')}`,
+            });
+        }
+
+        if (!paymentMethod) {
+            return res.status(400).json({
+                success: false,
+                message: 'Payment method is required',
+            });
+        }
+
         // Get user's cart
         const cart = await Cart.findOne({ user: req.user.id }).populate(
             'items.product'
