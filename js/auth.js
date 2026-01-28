@@ -65,6 +65,13 @@ const handleLogin = async (event) => {
             updateAuthUI();
             showNotification('Login successful!', 'success');
 
+            const redirect = localStorage.getItem('postLoginRedirect');
+            if (redirect) {
+                localStorage.removeItem('postLoginRedirect');
+                window.location.href = redirect;
+                return;
+            }
+
             // Reload cart with user data
             if (window.Cart) {
                 await window.Cart.init();
@@ -96,6 +103,13 @@ const handleRegister = async (event) => {
             hideRegisterModal();
             updateAuthUI();
             showNotification('Registration successful!', 'success');
+
+            const redirect = localStorage.getItem('postLoginRedirect');
+            if (redirect) {
+                localStorage.removeItem('postLoginRedirect');
+                window.location.href = redirect;
+                return;
+            }
 
             // Reload cart with user data
             if (window.Cart) {
