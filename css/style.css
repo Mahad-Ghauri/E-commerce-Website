@@ -932,7 +932,8 @@ body::-webkit-scrollbar {
     padding: 0 4rem;
     margin: 5rem 0;
     max-width: 125rem;
-    height: 190rem;
+    min-height: 190rem;
+    height: auto;
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     grid-auto-rows: 1fr;
@@ -1051,6 +1052,19 @@ body::-webkit-scrollbar {
 }
 .sneaker-cont16::before {
     background: #b7bab5;
+}
+.product-card::before {
+    background: var(--accent, #747474);
+}
+.product-loading,
+.product-empty-state {
+    grid-column: 1 / -1;
+    color: #fff;
+    text-align: center;
+    font-size: 2rem;
+    padding: 4rem 0;
+    text-transform: uppercase;
+    letter-spacing: 0.2rem;
 }
 .product-cont > :hover .sneaker-img {
     transform: scale(1.1) rotate(-10deg);
@@ -1344,6 +1358,35 @@ body::-webkit-scrollbar {
     transform: translateY(7rem);
     -webkit-transform: translateY(7rem);
     -moz-transform: translateY(7rem);
+}
+.sneakerDesc .sneakerSize .sizes .size-option {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 2.6rem;
+    height: 2.6rem;
+    border-radius: 50%;
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    margin-right: 0.5rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+.sneakerDesc .sneakerSize .sizes .size-option.is-selected {
+    background: #08ee00;
+    color: #000;
+    border-color: #08ee00;
+}
+.btnBuy-cont .product-price {
+    display: block;
+    margin-top: 0.5rem;
+    font-size: 1.3rem;
+    color: #fff;
+}
+.btnBuy-cont .product-stock {
+    display: block;
+    margin-top: 0.3rem;
+    font-size: 1.1rem;
+    color: #f39c12;
 }
 .product-cont > :hover .sneakerSize .sizes {
     opacity: 1;
