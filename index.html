@@ -51,6 +51,21 @@
                 </nav>
             </div>
 
+            <div class="product-search">
+                <input id="product-search" type="text" placeholder="Search sneakers..." aria-label="Search products">
+                <select id="product-category" aria-label="Filter by category">
+                    <option value="">All Categories</option>
+                    <option value="jordan 1">Jordan 1</option>
+                    <option value="air force 1">Air Force 1</option>
+                    <option value="air max 95">Air Max 95</option>
+                    <option value="air max 270">Air Max 270</option>
+                </select>
+                <label class="featured-toggle">
+                    <input type="checkbox" id="product-featured">
+                    <span>Featured</span>
+                </label>
+            </div>
+
             <!-- Cart Icon -->
             <div class="cart-icon" onclick="Cart.show()">
                 <i class="fas fa-shopping-cart"></i>

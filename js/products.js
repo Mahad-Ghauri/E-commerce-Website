@@ -1,4 +1,7 @@
 const productContainer = document.querySelector('.product-cont');
+const searchInput = document.getElementById('product-search');
+const categorySelect = document.getElementById('product-category');
+const featuredToggle = document.getElementById('product-featured');
 
 const colorPalette = [
     '#747474',
@@ -111,17 +114,56 @@ const renderProducts = (products) => {
     scrollSections.forEach((section) => productContainer.appendChild(section));
 };
 
-const loadProducts = async () => {
+const loadProducts = async (filters = {}) => {
     if (!productContainer) return;
 
     try {
-        const response = await API.products.getAll();
+        const response = await API.products.getAll(filters);
         if (response.success) {
             renderProducts(response.data || []);
         }
     } catch (error) {
         console.error('Failed to load products:', error);
         renderProducts([]);
+    }
+};
+
+const buildFilters = () => {
+    const filters = {};
+
+    if (searchInput && searchInput.value.trim()) {
+        filters.search = searchInput.value.trim();
+    }
+
+    if (categorySelect && categorySelect.value) {
+        filters.category = categorySelect.value;
+    }
+
+    if (featuredToggle && featuredToggle.checked) {
+        filters.featured = 'true';
+    }
+
+    return filters;
+};
+
+const bindFilters = () => {
+    if (!searchInput && !categorySelect && !featuredToggle) return;
+
+    let searchTimeout;
+
+    if (searchInput) {
+        searchInput.addEventListener('input', () => {
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(() => loadProducts(buildFilters()), 300);
+        });
+    }
+
+    if (categorySelect) {
+        categorySelect.addEventListener('change', () => loadProducts(buildFilters()));
+    }
+
+    if (featuredToggle) {
+        featuredToggle.addEventListener('change', () => loadProducts(buildFilters()));
     }
 };
 
@@ -172,6 +214,7 @@ const handleProductInteractions = () => {
 };
 
 document.addEventListener('DOMContentLoaded', () => {
-    loadProducts();
+    loadProducts(buildFilters());
     handleProductInteractions();
+    bindFilters();
 });
