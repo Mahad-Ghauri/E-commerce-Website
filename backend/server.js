@@ -57,6 +57,8 @@ app.use('/api/products', require('./routes/products'));
 app.use('/api/cart', require('./routes/cart'));
 app.use('/api/orders', require('./routes/orders'));
 app.use('/api/upload', require('./routes/upload'));
+app.use('/api/wishlist', require('./routes/wishlist'));
+app.use('/api/reviews', require('./routes/reviews'));
 
 // Health check route
 app.get('/api/health', (req, res) => {

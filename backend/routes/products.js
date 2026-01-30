@@ -10,6 +10,10 @@ const { protect, authorize } = require('../middleware/auth');
 
 const router = express.Router();
 
+// Re-route into other resource routers
+const reviewRouter = require('./reviews');
+router.use('/:productId/reviews', reviewRouter);
+
 router.route('/')
     .get(getProducts)
     .post(protect, authorize('admin'), createProduct);

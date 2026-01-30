@@ -5,7 +5,16 @@ const Product = require('../models/Product');
 // @access  Public
 exports.getProducts = async (req, res, next) => {
     try {
-        const { category, search, featured } = req.query;
+        const {
+            category,
+            search,
+            featured,
+            minPrice,
+            maxPrice,
+            sort,
+            page = 1,
+            limit = 100,
+        } = req.query;
         let query = {};
 
         // Filter by category
@@ -23,11 +32,37 @@ exports.getProducts = async (req, res, next) => {
             query.$text = { $search: search };
         }
 
-        const products = await Product.find(query);
+        // Filter by price range
+        if (minPrice || maxPrice) {
+            query.price = {};
+            if (minPrice) query.price.$gte = Number(minPrice);
+            if (maxPrice) query.price.$lte = Number(maxPrice);
+        }
+
+        // Sort options
+        let sortBy = { createdAt: -1 }; // Default: newest first
+        if (sort === 'price-asc') sortBy = { price: 1 };
+        if (sort === 'price-desc') sortBy = { price: -1 };
+        if (sort === 'name') sortBy = { name: 1 };
+        if (sort === 'popular') sortBy = { views: -1 };
+        if (sort === 'rating') sortBy = { averageRating: -1 };
+
+        // Pagination
+        const skip = (page - 1) * limit;
+
+        const products = await Product.find(query)
+            .sort(sortBy)
+            .limit(Number(limit))
+            .skip(skip);
+
+        const total = await Product.countDocuments(query);
 
         res.status(200).json({
             success: true,
             count: products.length,
+            total,
+            page: Number(page),
+            pages: Math.ceil(total / limit),
             data: products,
         });
     } catch (error) {
@@ -48,6 +83,10 @@ exports.getProduct = async (req, res, next) => {
                 message: 'Product not found',
             });
         }
+
+        // Increment view count
+        product.views += 1;
+        await product.save();
 
         res.status(200).json({
             success: true,
