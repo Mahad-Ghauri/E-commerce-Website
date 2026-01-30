@@ -201,6 +201,35 @@ body::-webkit-scrollbar {
 .nav-main {
     margin-right: 0.9rem;
 }
+.product-search {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-right: 2rem;
+}
+.product-search input,
+.product-search select {
+    padding: 0.8rem 1.2rem;
+    border-radius: 10px;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    font-size: 1.4rem;
+    font-family: var(--pFont);
+}
+.product-search input {
+    width: 18rem;
+}
+.featured-toggle {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-size: 1.3rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08rem;
+    color: #3b3b3b;
+}
+.featured-toggle input {
+    accent-color: #3b3b3b;
+}
 .nav-cont {
     display: flex;
     justify-content: space-evenly;
