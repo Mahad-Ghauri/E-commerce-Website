@@ -1,9 +1,3 @@
-const ordersList = document.getElementById('orders-list');
-const ordersEmpty = document.getElementById('orders-empty');
-const refreshButton = document.getElementById('refresh-orders');
-
-const baseUrl = (window.API_BASE_URL || '').replace('/api', '');
-
 const showNotification = (message, type = 'info') => {
     const notification = document.createElement('div');
     notification.className = `notification notification-${type}`;
@@ -21,81 +15,95 @@ const showNotification = (message, type = 'info') => {
     }, 3000);
 };
 
-const formatDate = (dateValue) => {
-    const date = new Date(dateValue);
-    return date.toLocaleDateString(undefined, {
-        year: 'numeric',
-        month: 'short',
-        day: 'numeric',
-    });
+const formatPrice = (price) => `$${Number(price || 0).toFixed(2)}`;
+const formatDate = (date) => new Date(date).toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric'
+});
+
+const getStatusClass = (status) => {
+    const statusMap = {
+        processing: 'status-processing',
+        shipped: 'status-shipped',
+        delivered: 'status-delivered',
+        cancelled: 'status-cancelled',
+    };
+    return statusMap[status] || 'status-processing';
 };
 
-const formatPrice = (price) => `$${Number(price || 0).toFixed(2)}`;
-
 const renderOrders = (orders) => {
-    if (!ordersList || !ordersEmpty) return;
+    const ordersList = document.getElementById('orders-list');
+    if (!ordersList) return;
 
-    if (!orders.length) {
-        ordersList.innerHTML = '';
-        ordersEmpty.style.display = 'flex';
+    if (!orders || orders.length === 0) {
+        ordersList.innerHTML = `
+            <div class="empty-orders">
+                <i class="fas fa-shopping-bag"></i>
+                <h3>No orders yet</h3>
+                <p>Start shopping to see your orders here!</p>
+                <a href="/">Browse Products</a>
+            </div>
+        `;
         return;
     }
 
-    ordersEmpty.style.display = 'none';
+    const baseUrl = (window.API_BASE_URL || '').replace('/api', '');
 
     ordersList.innerHTML = orders
         .map(
             (order) => `
-      <article class="order-card">
-        <header>
-          <div>
-            <h3>${order.orderNumber}</h3>
-            <p>${formatDate(order.createdAt)}</p>
-          </div>
-          <div class="order-status">
-            <span class="badge badge-${order.orderStatus}">${order.orderStatus}</span>
-            <span class="badge badge-${order.paymentStatus}">${order.paymentStatus}</span>
-          </div>
-        </header>
-        <div class="order-items">
-          ${order.items
-              .map(
-                  (item) => `
-            <div class="order-item">
-              <img src="${baseUrl}${item.image}" alt="${item.name}">
-              <div>
-                <h4>${item.name}</h4>
-                <p>Size ${item.size} • Qty ${item.quantity}</p>
-              </div>
-              <span>${formatPrice(item.price * item.quantity)}</span>
-            </div>`
-              )
-              .join('')}
+        <div class="order-card">
+            <div class="order-header">
+                <span class="order-number">${order.orderNumber}</span>
+                <span class="order-status ${getStatusClass(order.orderStatus)}">
+                    ${order.orderStatus}
+                </span>
+            </div>
+            <div class="order-items">
+                ${order.items
+                    .map(
+                        (item) => `
+                    <div class="order-item">
+                        <img src="${baseUrl}${item.image}" alt="${item.name}">
+                        <div class="order-item-info">
+                            <h4>${item.name}</h4>
+                            <p>Size ${item.size} • Qty ${item.quantity} • ${formatPrice(item.price)}</p>
+                        </div>
+                        <span>${formatPrice(item.price * item.quantity)}</span>
+                    </div>
+                `
+                    )
+                    .join('')}
+            </div>
+            <div class="order-footer">
+                <span class="order-date">${formatDate(order.createdAt)}</span>
+                <span class="order-total">Total: ${formatPrice(order.totalAmount)}</span>
+            </div>
         </div>
-        <footer>
-          <span>Total</span>
-          <strong>${formatPrice(order.totalAmount)}</strong>
-        </footer>
-      </article>`
+    `
         )
         .join('');
 };
 
 const loadOrders = async () => {
+    if (!API.auth.isAuthenticated()) {
+        window.location.href = '/';
+        return;
+    }
+
     try {
         const response = await API.orders.getAll();
         if (response.success) {
-            renderOrders(response.data || []);
+            renderOrders(response.data);
         }
     } catch (error) {
         console.error('Failed to load orders:', error);
-        showNotification(error.message || 'Failed to load orders', 'error');
+        showNotification('Failed to load orders', 'error');
     }
 };
 
-const initOrders = () => {
-    if (!API.auth.isAuthenticated()) {
-        localStorage.setItem('postLoginRedirect', '/orders.html');
+document.addEventListener('DOMContentLoaded', loadOrders);
         window.location.href = '/';
         return;
     }
